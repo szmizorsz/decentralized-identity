@@ -1,23 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react'
+import {
+  getRecord
+} from './utils/identityUtils'
 
 function App() {
+  const [profile, setProfile] = useState({})
+  const [loaded, setLoaded] = useState(false)
+
+  async function readProfile() {
+    try {
+      const { record } = await getRecord()
+      if (record) {
+        setProfile(record)
+        console.log(profile)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    setLoaded(true)
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={readProfile}>Read Profile</button>
+      {(Object.keys(profile).length === 0 && loaded) && <h4>No profile, please create one... </h4>}
     </div>
   );
 }
